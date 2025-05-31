@@ -1,0 +1,110 @@
+package pkgQueue;
+import java.util.Scanner;
+class cBarang {
+    private String nama;
+    int harga;
+    cBarang prev,next;
+    cBarang(String n,int h){
+        nama=n;harga=h;
+        System.out.println("Object barang dibuat...");
+    }
+    public String getData(){
+        return nama;
+    }
+}
+class cQueue {
+    cBarang front,rear;
+    int size;
+    cQueue(){
+        front=rear=null;
+        size=0;
+    }
+    public void Enqueue(cBarang baru){
+        if(rear==null){
+            front=rear=baru;
+        }
+        else{
+            rear.prev=baru;
+            baru.next=rear;
+            rear=baru;
+        }
+        size++;
+        System.out.println("Enqueue sukses..");
+    }
+    cBarang Dequeue(){
+        cBarang t=null;
+        if(front==null){
+            System.out.println("Queue kosong!");
+        }
+        else if(front.prev==null){
+            t=front;
+            front=rear=null;
+            size--;
+            System.out.println("dequeue sukses...");
+        }
+        else{
+            t=front;
+            cBarang temp=front.prev;
+            front.prev=null;
+            temp.next=null;
+            front=temp;
+            size--;
+            System.out.println("dequeue sukses...");
+        }
+        return t;    
+    }
+    void view(){
+        System.out.println("Isi queue: ("+size+") antrian");
+        for (cBarang t=rear; t!=null; t=t.next) {
+            System.out.print(t.getData()+" ["+t.harga+"] ");
+        }
+        System.out.println("");
+    }
+}
+public class appQueue {
+    public static void main(String[] args) {
+        cBarang brg = new cBarang("",0);
+        cQueue q = new cQueue();
+        Scanner sc = new Scanner(System.in);
+        int pilih=0;
+        int pemasukan=0;
+        do{
+            System.out.println("MENU QUEUE");
+            System.out.println("1. Enqueue\n2. Dequeue");
+            System.out.println("3. View\n4. Exit");
+            System.out.print("Pilih: ");
+            pilih=sc.nextInt();
+            switch(pilih){
+                case 1:
+                    System.out.print("Masukkan Barang: ");
+                    String nm = sc.next();
+                    System.out.print("Masukkan Harga: ");
+                    int h = sc.nextInt();
+                    brg = new cBarang(nm,h);
+                    q.Enqueue(brg);
+                    break;
+                case 2:
+                    cBarang t=q.Dequeue();
+                    if(t!=null){
+                        System.out.println("Check out: "+t.getData());
+                        //hitung pemasukan
+                        pemasukan=pemasukan+t.harga;
+                    }
+                    else System.out.println("Queue kosong!");
+                    System.out.println("Pemasukan toko: "+pemasukan);
+                    break;
+                case 3:
+                    q.view();
+                    int total=0;
+                    for(cBarang temp = q.front; temp!=null; temp=temp.prev) {
+                        total=total+temp.harga;    
+                    }
+                    System.out.println("Total Transaksi: "+total);
+                    break;
+                case 4:
+                    System.out.println("Thanks...");
+                    break;
+            }
+        }while(pilih!=4);
+    }
+}
